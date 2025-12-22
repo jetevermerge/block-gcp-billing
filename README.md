@@ -33,6 +33,16 @@ Note: Recently the GCP Billing Export moved from Beta to v1. If you activated th
 1. Go to **BigQuery** and copy the name of the billing export table, this will start **gcp_billing_export_**
 2. Create a new **Database Connection** in Looker to connect to the BigQuery dataset: follow the steps [here](https://docs.looker.com/setup-and-management/database-config/google-bigquery) to create a service account in GCP and add a new connection to Looker, ensure you use **BigQuery standard SQL**
 
+
+### Schema Support (Legacy vs. New CUD Model)
+
+Reference [Cloud Billing export to BigQuery](https://docs.cloud.google.com/docs/cuds-multiprice-datamodel#export-bigquery)
+
+This block is updated to support the **CUDs Multiprice Data Model** (Proportional Attribution).
+
+* **Native Support:** The model now includes fields like `consumption_model` and `list_price` by default.
+* **Legacy Compatibility:** If you are still on the Legacy schema, the core financial metrics (`Total Cost`, `Net Cost`) remain accurate. However, attempting to query the specific new CUD fields (like `list_price`) before your BigQuery table has been migrated may result in errors.
+
 You should now be ready to start monitoring your GCP usage.
 
 ## Block Customization

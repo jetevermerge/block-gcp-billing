@@ -7,6 +7,11 @@ constant: CONNECTION_NAME {
   export: override_optional
 }
 
+constant: PROJECT_ID {
+  value: "billing_project_id"
+  export: override_optional
+}
+
 constant: SCHEMA_NAME {
   value: "gcp_logs"
   export: override_optional

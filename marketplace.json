@@ -11,6 +11,9 @@
             "label": "Connection name",
             "value_constraint": "connection"
         },
+        "PROJECT_ID": {
+            "label": "GCP Project where billing data is stored"
+        },
         "SCHEMA_NAME": {
             "label": "Schema Name"
         },

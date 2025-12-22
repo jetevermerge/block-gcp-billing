@@ -5,7 +5,7 @@ view: gcp_billing_export {
         *,
         GENERATE_UUID() as pk
       FROM
-        `@{SCHEMA_NAME}.@{BILLING_EXPORT_TABLE_NAME}`
+        `@{PROJECT_ID}.@{SCHEMA_NAME}.@{BILLING_EXPORT_TABLE_NAME}`
       WHERE
         {% condition date_filter %} _PARTITIONTIME {% endcondition %} ;;
   }
@@ -151,6 +151,20 @@ view: gcp_billing_export {
     sql: ${TABLE}.usage ;;
   }
 
+  dimension: consumption_model_type {
+    type: string
+    description: "Indicates if the usage is 'Default' (On-Demand) or covered by a CUD."
+    sql: ${TABLE}.consumption_model.description ;;
+    group_label: "CUD Analysis"
+  }
+
+  dimension: list_price {
+    type: number
+    description: "The gross list price of the SKU."
+    sql: ${TABLE}.price.list_price ;;
+    value_format_name: decimal_4
+  }
+
   ### DIMENSION GROUPS
 
   dimension_group: export {
@@ -213,7 +227,7 @@ view: gcp_billing_export {
   ### MEASURES
 
   measure: cost_before_credits {
-    description: "The cost associated to an SKU before any credits, between the Start Date and End Date"
+    description: "The cost associated to an SKU before any credits, between the Start Date and End Date. Note: Under the new CUD model, this reflects LIST PRICE for committed usage."
     type: sum
     sql: ${TABLE}.cost ;;
     value_format_name: decimal_2
@@ -256,5 +270,12 @@ view: gcp_billing_export {
     }
     drill_fields: [gcp_billing_export_project.name, gcp_billing_export_service.description, sku_category, gcp_billing_export_sku.description, gcp_billing_export_usage.unit, gcp_billing_export_usage.total_usage, total_cost]
 
+  }
+
+  measure: total_list_cost {
+    description: "The total gross cost before any credits or discounts are applied."
+    type: sum
+    sql: ${TABLE}.cost ;;
+    value_format_name: usd
   }
 }

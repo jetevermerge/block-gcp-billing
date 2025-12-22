@@ -23,6 +23,12 @@ view: gcp_billing_export_credits {
     sql: ${TABLE}.name ;;
   }
 
+  dimension: credit_type {
+    type: string
+    description: "The type of credit (e.g., FEE_UTILIZATION_OFFSET, COMMITTED_USAGE_DISCOUNT)."
+    sql: ${TABLE}.type ;;
+  }
+
   ### MEASURES
 
   measure: total_credit {
