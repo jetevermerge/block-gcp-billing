@@ -33,6 +33,22 @@ view: gcp_billing_export {
     }
   }
 
+  parameter: reporting_currency {
+    group_label: "Currency Conversion"
+    label: "Reporting Currency"
+    description: "Returns cost fields in the original billing currency or converts them to USD using GCP billing's currency_conversion_rate."
+    type: string
+    default_value: "BILLING"
+    allowed_value: {
+      label: "Billing Currency"
+      value: "BILLING"
+    }
+    allowed_value: {
+      label: "USD"
+      value: "USD"
+    }
+  }
+
   ### Field description reference https://cloud.google.com/billing/docs/how-to/export-data-bigquery
   ### DIMENSIONS
 
@@ -47,7 +63,7 @@ view: gcp_billing_export {
   dimension: is_last_month {
     type: yesno
     sql: ${usage_start_month_num} = EXTRACT(month from CURRENT_TIMESTAMP())-1
-          AND ${usage_start_year} = EXTRACT(year from CURRENT_TIMESTAMP());;
+      AND ${usage_start_year} = EXTRACT(year from CURRENT_TIMESTAMP());;
   }
 
   dimension: billing_date {
@@ -84,6 +100,19 @@ view: gcp_billing_export {
     description: "The exchange rate from US dollars to the local currency. That is, cost/currency_conversion_rate is the cost in US dollars."
     type: number
     sql: ${TABLE}.currency_conversion_rate ;;
+  }
+
+  dimension: reporting_currency_code {
+    group_label: "Currency Conversion"
+    label: "Reporting Currency Code"
+    description: "Resolved output currency code after applying the Reporting Currency parameter."
+    type: string
+    sql:
+      {% if reporting_currency._parameter_value == "'USD'" %}
+        'USD'
+      {% else %}
+        ${currency}
+      {% endif %} ;;
   }
 
   dimension: labels { # Nested record
@@ -229,16 +258,21 @@ view: gcp_billing_export {
   measure: cost_before_credits {
     description: "The cost associated to an SKU before any credits, between the Start Date and End Date. Note: Under the new CUD model, this reflects LIST PRICE for committed usage."
     type: sum
-    sql: ${TABLE}.cost ;;
+    sql:
+      {% if reporting_currency._parameter_value == "'USD'" %}
+        SAFE_DIVIDE(${TABLE}.cost, NULLIF(${TABLE}.currency_conversion_rate, 0))
+      {% else %}
+        ${TABLE}.cost
+      {% endif %} ;;
     value_format_name: decimal_2
-    html: {% if currency._value == 'GBP' %}
-            <a href="{{ link }}"> £{{ rendered_value }}</a>
-          {% elsif currency == 'USD' %}
-            <a href="{{ link }}"> ${{ rendered_value }}</a>
-          {% elsif currency == 'EUR' %}
-            <a href="{{ link }}"> €{{ rendered_value }}</a>
+    html: {% if reporting_currency_code._value == 'GBP' %}
+            <a href="{{ link }}">GBP {{ rendered_value }}</a>
+          {% elsif reporting_currency_code._value == 'USD' %}
+            <a href="{{ link }}">${{ rendered_value }}</a>
+          {% elsif reporting_currency_code._value == 'EUR' %}
+            <a href="{{ link }}">EUR {{ rendered_value }}</a>
           {% else %}
-            <a href="{{ link }}"> {{ rendered_value }} {{ currency._value }}</a>
+            <a href="{{ link }}"> {{ rendered_value }} {{ reporting_currency_code._value }}</a>
           {% endif %} ;;
     drill_fields: [gcp_billing_export_project.name, gcp_billing_export_service.description, sku_category, gcp_billing_export_sku.description, gcp_billing_export_usage.unit, gcp_billing_export_usage.total_usage, total_cost]
   }
@@ -255,14 +289,14 @@ view: gcp_billing_export {
     type: number
     sql: ${cost_before_credits} + ${gcp_billing_export_credits.total_credit} ;;
     value_format_name: decimal_2
-    html: {% if currency._value == 'GBP' %}
-            <a href="{{ link }}"> £{{ rendered_value }}</a>
-          {% elsif currency == 'USD' %}
-            <a href="{{ link }}"> ${{ rendered_value }}</a>
-          {% elsif currency == 'EUR' %}
-            <a href="{{ link }}"> €{{ rendered_value }}</a>
+    html: {% if reporting_currency_code._value == 'GBP' %}
+            <a href="{{ link }}">GBP {{ rendered_value }}</a>
+          {% elsif reporting_currency_code._value == 'USD' %}
+            <a href="{{ link }}">${{ rendered_value }}</a>
+          {% elsif reporting_currency_code._value == 'EUR' %}
+            <a href="{{ link }}">EUR {{ rendered_value }}</a>
           {% else %}
-            <a href="{{ link }}"> {{ rendered_value }} {{ currency._value }}</a>
+            <a href="{{ link }}"> {{ rendered_value }} {{ reporting_currency_code._value }}</a>
           {% endif %} ;;
     link: {
       label: "{% if project_name_sort.top_10_projects._in_query %}Project Breakdown{% elsif service_name_sort.top_10_services._in_query %}Service Breakdown{% else %}{% endif %}"
@@ -275,7 +309,21 @@ view: gcp_billing_export {
   measure: total_list_cost {
     description: "The total gross cost before any credits or discounts are applied."
     type: sum
-    sql: ${TABLE}.cost ;;
-    value_format_name: usd
+    sql:
+      {% if reporting_currency._parameter_value == "'USD'" %}
+        SAFE_DIVIDE(${TABLE}.cost, NULLIF(${TABLE}.currency_conversion_rate, 0))
+      {% else %}
+        ${TABLE}.cost
+      {% endif %} ;;
+    value_format_name: decimal_2
+    html: {% if reporting_currency_code._value == 'GBP' %}
+            <a href="{{ link }}">GBP {{ rendered_value }}</a>
+          {% elsif reporting_currency_code._value == 'USD' %}
+            <a href="{{ link }}">${{ rendered_value }}</a>
+          {% elsif reporting_currency_code._value == 'EUR' %}
+            <a href="{{ link }}">EUR {{ rendered_value }}</a>
+          {% else %}
+            <a href="{{ link }}"> {{ rendered_value }} {{ reporting_currency_code._value }}</a>
+          {% endif %} ;;
   }
 }

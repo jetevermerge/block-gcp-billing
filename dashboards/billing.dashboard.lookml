@@ -27,6 +27,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 12
     width: 6
@@ -55,6 +56,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 0
     width: 6
@@ -102,6 +104,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 18
     width: 6
@@ -163,6 +166,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 25
     col: 0
     width: 24
@@ -243,6 +247,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 6
     width: 6
@@ -327,7 +332,8 @@
     comparison_type: value
     comparison_reverse_colors: false
     show_comparison_label: true
-    listen: {}
+    listen:
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 6
     col: 12
     width: 12
@@ -405,7 +411,8 @@
     comparison_reverse_colors: false
     show_comparison_label: true
     hidden_fields: [total_cost_30_days_ago]
-    listen: {}
+    listen:
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 6
     col: 0
     width: 12
@@ -490,6 +497,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 17
     col: 0
     width: 12
@@ -572,6 +580,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 17
     col: 12
     width: 12
@@ -597,3 +606,12 @@
     explore: gcp_billing_export
     listens_to_filters: []
     field: gcp_billing_export_project.name
+  - name: Reporting Currency
+    title: Reporting Currency
+    type: field_filter
+    allow_multiple_values: false
+    required: false
+    model: block_gcp_billing_v2
+    explore: gcp_billing_export
+    listens_to_filters: []
+    field: gcp_billing_export.reporting_currency

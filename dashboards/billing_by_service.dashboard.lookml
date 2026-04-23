@@ -21,6 +21,7 @@
     series_types: {}
     listen:
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 0
     width: 9
@@ -39,7 +40,7 @@
     column_limit: 50
     dynamic_fields: [{table_calculation: previous_30_days, label: Previous 30 Days,
         expression: 'offset(${gcp_billing_export.total_cost}, 30)', value_format: !!null '',
-        value_format_name: eur, _kind_hint: measure, _type_hint: number}]
+        value_format_name: decimal_2, _kind_hint: measure, _type_hint: number}]
     query_timezone: America/Los_Angeles
     x_axis_gridlines: false
     y_axis_gridlines: true
@@ -84,6 +85,7 @@
     show_null_labels: false
     listen:
       Service: gcp_billing_export_service.description
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 12
     col: 0
     width: 24
@@ -140,6 +142,7 @@
     listen:
       Service: gcp_billing_export_service.description
       Time Period: gcp_billing_export.usage_start_date
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 9
     width: 15
@@ -163,11 +166,11 @@
         value_format: !!null '', value_format_name: decimal_2, _kind_hint: measure,
         _type_hint: number}, {table_calculation: total_cost_of_project, label: Total
           Cost of Project, expression: 'sum(if(${gcp_billing_export_service.service_compare},
-          ${gcp_billing_export.total_cost}, 0))', value_format: !!null '', value_format_name: eur,
+          ${gcp_billing_export.total_cost}, 0))', value_format: !!null '', value_format_name: decimal_2,
         _kind_hint: measure, _type_hint: number}, {table_calculation: total_credit_applied_to_project,
         label: Total Credit Applied to Project, expression: 'sum(if(${gcp_billing_export_service.service_compare},
           ${gcp_billing_export_credits.total_credit}, 0))', value_format: !!null '',
-        value_format_name: eur, _kind_hint: measure, _type_hint: number}]
+        value_format_name: decimal_2, _kind_hint: measure, _type_hint: number}]
     query_timezone: America/Los_Angeles
     custom_color_enabled: true
     custom_color: ''
@@ -225,6 +228,7 @@
     listen:
       Service: gcp_billing_export_service.service_comparison
       Time Period: gcp_billing_export.usage_start_date
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 8
     col: 0
     width: 9
@@ -301,6 +305,7 @@
     listen:
       Service: gcp_billing_export_service.service_comparison
       Time Period: gcp_billing_export.usage_start_date
+      Reporting Currency: gcp_billing_export.reporting_currency
     row: 4
     col: 0
     width: 9
@@ -316,6 +321,15 @@
     explore: gcp_billing_export
     listens_to_filters: []
     field: gcp_billing_export_service.description
+  - name: Reporting Currency
+    title: Reporting Currency
+    type: field_filter
+    allow_multiple_values: false
+    required: false
+    model: block_gcp_billing_v2
+    explore: gcp_billing_export
+    listens_to_filters: []
+    field: gcp_billing_export.reporting_currency
   - name: Time Period
     title: Time Period
     type: date_filter
