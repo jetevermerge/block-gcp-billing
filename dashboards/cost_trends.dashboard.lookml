@@ -204,7 +204,7 @@
       gcp_billing_export_service.description: "-Snowflake Data Cloud,-Support"
       gcp_billing_export_project.name: ''
       gcp_billing_export.usage_end_month: 12 month ago for 12 month
-      gcp_billing_export.total_cost: ">5000"
+      gcp_billing_export.total_cost: ">0"
     sorts: [gcp_billing_export.total_cost desc]
     limit: 500
     column_limit: 50
