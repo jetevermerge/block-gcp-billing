@@ -1639,10 +1639,6 @@
     type: field_filter
     allow_multiple_values: false
     required: false
-    ui_config:
-      type: button_group
-      display: inline
-      options: []
     model: block_gcp_billing_v2
     explore: gcp_billing_export
     listens_to_filters: []
