@@ -27,6 +27,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 12
@@ -56,6 +57,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 0
@@ -104,6 +106,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 18
@@ -166,6 +169,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 25
     col: 0
@@ -247,6 +251,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 0
     col: 6
@@ -333,6 +338,7 @@
     comparison_reverse_colors: false
     show_comparison_label: true
     listen:
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 6
     col: 12
@@ -412,6 +418,7 @@
     show_comparison_label: true
     hidden_fields: [total_cost_30_days_ago]
     listen:
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 6
     col: 0
@@ -497,6 +504,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 17
     col: 0
@@ -580,6 +588,7 @@
     listen:
       Project: gcp_billing_export_project.name
       Service: gcp_billing_export_service.description
+      Usage End Date: gcp_billing_export.usage_end_date
       Reporting Currency: gcp_billing_export.reporting_currency
     row: 17
     col: 12
@@ -606,6 +615,20 @@
     explore: gcp_billing_export
     listens_to_filters: []
     field: gcp_billing_export_project.name
+  - name: Usage End Date
+    title: Usage End Date
+    type: field_filter
+    default_value: 30 day
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: relative_timeframes
+      display: inline
+      options: []
+    model: block_gcp_billing_v2
+    explore: gcp_billing_export
+    listens_to_filters: []
+    field: gcp_billing_export.usage_end_date
   - name: Reporting Currency
     title: Reporting Currency
     type: field_filter
